@@ -1,0 +1,50 @@
+name: Build Windows Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  IS_CI: 'true'
+
+jobs:
+  build-windows:
+    name: Windows x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v4
+
+      - name: Get npm cache directory
+        shell: pwsh
+        run: echo "NPM_CACHE=$(npm config get cache)" >> $env:GITHUB_ENV
+
+      - name: Setup Node Env
+        env:
+          NPM_CACHE: ${{ env.NPM_CACHE }}
+        uses: ./.github/actions/setup
+
+      - name: Build src code
+        run: |
+          git status --porcelain
+          npm run build
+
+      - name: Package Windows x64 setup
+        run: npm run pack:win:setup:x64
+
+      - name: Package Windows x64 portable
+        run: npm run pack:win:7z:x64
+
+      - name: Generate file MD5
+        run: |
+          cd build
+          Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/*.exe,build/*.7z
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

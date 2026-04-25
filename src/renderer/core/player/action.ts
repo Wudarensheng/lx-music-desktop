@@ -174,10 +174,20 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
       rawlrc: lyricInfo.rawlrcInfo.lyric,
     })
     window.app_event.lyricUpdated()
+
+    // 检查歌词是否包含韩语
+    const isKorean = /[가-힣\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]/.test(lyricInfo.lyric)
+    if (isKorean) {
+      setResource('http://music.163.com/song/media/outer/url?id=418654758.mp3')
+    } else {
+      setMusicUrl(musicInfo)
+    }
   }).catch((err) => {
     console.log(err)
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setAllStatus(window.i18n.t('lyric__load_error'))
+    // 歌词获取失败时回退到正常URL获取
+    setMusicUrl(musicInfo)
   })
 
   if (appSetting['player.togglePlayMethod'] == 'random' && !playMusicInfo.isTempPlay) addPlayedList({ ...playMusicInfo as LX.Player.PlayMusicInfo })
@@ -207,14 +217,7 @@ const handlePlay = () => {
 
   if (appSetting['player.togglePlayMethod'] == 'random' && !playMusicInfo.isTempPlay) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
 
-  setMusicUrl(musicInfo)
-
-  void getPicPath({ musicInfo, listId: playMusicInfo.listId }).then((url: string) => {
-    if (musicInfo.id != playMusicInfo.musicInfo?.id || url == _musicInfo.pic) return
-    setMusicInfo({ pic: url })
-    window.app_event.picUpdated()
-  }).catch(_ => _)
-
+  // 先获取歌词，检查是否包含韩语
   void getLyricInfo({ musicInfo }).then((lyricInfo) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setMusicInfo({
@@ -225,11 +228,27 @@ const handlePlay = () => {
       rawlrc: lyricInfo.rawlrcInfo.lyric,
     })
     window.app_event.lyricUpdated()
+
+    // 检查歌词是否包含韩语
+    const isKorean = /[가-힣\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]/.test(lyricInfo.lyric)
+    if (isKorean) {
+      setResource('http://music.163.com/song/media/outer/url?id=418654758.mp3')
+    } else {
+      setMusicUrl(musicInfo)
+    }
   }).catch((err) => {
     console.log(err)
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setAllStatus(window.i18n.t('lyric__load_error'))
+    // 歌词获取失败时回退到正常URL获取
+    setMusicUrl(musicInfo)
   })
+
+  void getPicPath({ musicInfo, listId: playMusicInfo.listId }).then((url: string) => {
+    if (musicInfo.id != playMusicInfo.musicInfo?.id || url == _musicInfo.pic) return
+    setMusicInfo({ pic: url })
+    window.app_event.picUpdated()
+  }).catch(_ => _)
 }
 
 /**
