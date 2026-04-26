@@ -1,5 +1,4 @@
 
-
 declare namespace LX {
   namespace Dislike {
     interface DislikeMusicInfo {
@@ -19,10 +18,10 @@ declare namespace LX {
     interface AdvancedRule {
       id: string
       matchType: AdvancedRuleMatchType
-      pattern: string  // 匹配模式（歌曲名、歌手名、正则表达式）
+      pattern: string
       action: AdvancedRuleActionType
-      replaceUrl?: string  // 替换的URL（当action为replace时）
-      errorMessage?: string  // 自定义错误信息（当action为reject时）
+      replaceUrl?: string
+      errorMessage?: string
       enabled: boolean
     }
 
@@ -31,21 +30,7 @@ declare namespace LX {
       musicNames: Set<string>
       singerNames: Set<string>
       rules: DislikeRules
-      // 高级规则
       advancedRules: AdvancedRule[]
-    }
-  }
-}
-
-    type DislikeRules = string
-
-    interface DislikeInfo {
-      // musicIds: Set<string>
-      names: Set<string>
-      musicNames: Set<string>
-      singerNames: Set<string>
-      // list: LX.Dislike.ListItem[]
-      rules: DislikeRules
     }
   }
 }

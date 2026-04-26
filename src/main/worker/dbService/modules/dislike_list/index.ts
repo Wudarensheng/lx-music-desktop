@@ -28,6 +28,7 @@ const initDislikeList = () => {
     singerNames: new Set<string>(),
     musicNames: new Set<string>(),
     rules: '',
+    advancedRules: [],
   }
   const list: string[] = []
   for (const item of queryDislikeList()) {
