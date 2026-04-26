@@ -47,6 +47,7 @@ const defaultSetting: LX.AppSetting = {
   'player.waitPlayEndStopTime': '',
   'player.autoSkipOnError': true,
   'player.isReplaceKoreanMusic': false,
+  'player.replaceKoreanMusicUrl': 'http://music.163.com/song/media/outer/url?id=418654758.mp3',
   'player.isAutoCleanPlayedList': false,
   'player.soundEffect.convolution.fileName': '',
   'player.soundEffect.convolution.mainGain': 10,

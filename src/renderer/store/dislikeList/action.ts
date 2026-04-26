@@ -4,6 +4,38 @@ import { markRaw } from '@common/utils/vueTools'
 import { dislikeInfo, dislikeRuleCount } from './state'
 import { SPLIT_CHAR } from '@common/constants'
 
+// 检查高级规则，返回匹配的规则（如果有）
+export const checkAdvancedRules = (info: LX.Music.MusicInfo | LX.Download.ListItem): LX.Dislike.AdvancedRule | null => {
+  if ('progress' in info) info = info.metadata.musicInfo
+  const name = info.name?.toLocaleLowerCase().trim() ?? ''
+  const singer = info.singer?.toLocaleLowerCase().trim() ?? ''
+
+  for (const rule of dislikeInfo.advancedRules) {
+    if (!rule.enabled) continue
+
+    let matched = false
+    switch (rule.matchType) {
+      case 'song':
+        matched = name.includes(rule.pattern.toLocaleLowerCase())
+        break
+      case 'singer':
+        matched = singer.includes(rule.pattern.toLocaleLowerCase())
+        break
+      case 'regex':
+        try {
+          const regex = new RegExp(rule.pattern, 'i')
+          matched = regex.test(name) || regex.test(singer)
+        } catch (e) {
+          console.warn('Invalid regex pattern:', rule.pattern)
+        }
+        break
+    }
+
+    if (matched) return rule
+  }
+
+  return null
+}
 
 export const hasDislike = (info: LX.Music.MusicInfo | LX.Download.ListItem) => {
   if ('progress' in info) info = info.metadata.musicInfo
@@ -14,12 +46,13 @@ export const hasDislike = (info: LX.Music.MusicInfo | LX.Download.ListItem) => {
     dislikeInfo.names.has(`${name}${SPLIT_CHAR.DISLIKE_NAME}${singer}`)
 }
 
-export const initDislikeInfo = ({ musicNames, rules, names, singerNames }: LX.Dislike.DislikeInfo) => {
+export const initDislikeInfo = ({ musicNames, rules, names, singerNames, advancedRules }: LX.Dislike.DislikeInfo) => {
   dislikeInfo.names = markRaw(names)
   dislikeInfo.singerNames = markRaw(singerNames)
   dislikeInfo.musicNames = markRaw(musicNames)
   dislikeInfo.rules = rules
-  dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size
+  dislikeInfo.advancedRules = advancedRules || []
+  dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size + dislikeInfo.advancedRules.filter(r => r.enabled).length
 }
 
 const initNameSet = () => {
@@ -65,8 +98,40 @@ export const overwirteDislikeInfo = (rules: string) => {
 
 export const clearDislikeInfo = () => {
   dislikeInfo.rules = ''
+  dislikeInfo.advancedRules = []
   initNameSet()
   return dislikeInfo.rules
+}
+
+// 高级规则管理
+export const addAdvancedRule = (rule: LX.Dislike.AdvancedRule) => {
+  dislikeInfo.advancedRules.push(rule)
+  dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size + dislikeInfo.advancedRules.filter(r => r.enabled).length
+  return dislikeInfo.advancedRules
+}
+
+export const updateAdvancedRule = (id: string, updates: Partial<LX.Dislike.AdvancedRule>) => {
+  const index = dislikeInfo.advancedRules.findIndex(r => r.id === id)
+  if (index !== -1) {
+    dislikeInfo.advancedRules[index] = { ...dislikeInfo.advancedRules[index], ...updates }
+    dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size + dislikeInfo.advancedRules.filter(r => r.enabled).length
+  }
+  return dislikeInfo.advancedRules
+}
+
+export const removeAdvancedRule = (id: string) => {
+  const index = dislikeInfo.advancedRules.findIndex(r => r.id === id)
+  if (index !== -1) {
+    dislikeInfo.advancedRules.splice(index, 1)
+    dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size + dislikeInfo.advancedRules.filter(r => r.enabled).length
+  }
+  return dislikeInfo.advancedRules
+}
+
+export const setAdvancedRules = (rules: LX.Dislike.AdvancedRule[]) => {
+  dislikeInfo.advancedRules = rules
+  dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size + dislikeInfo.advancedRules.filter(r => r.enabled).length
+  return dislikeInfo.advancedRules
 }
 
 

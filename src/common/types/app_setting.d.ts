@@ -290,6 +290,11 @@ declare global {
       'player.isReplaceKoreanMusic': boolean
 
       /**
+       * 篡改韩国歌曲时替换的歌曲URL
+       */
+      'player.replaceKoreanMusicUrl': string
+
+      /**
        * 点击相同列表内的歌曲切歌时是否清空已播放列表（随机模式下列表内所有歌曲会重新参与随机）
        */
       'player.isAutoCleanPlayedList': boolean

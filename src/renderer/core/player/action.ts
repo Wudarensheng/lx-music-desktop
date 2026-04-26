@@ -19,7 +19,7 @@ import { requestMsg } from '@renderer/utils/message'
 import { getRandom } from '@renderer/utils/index'
 import { addListMusics, removeListMusics } from '@renderer/store/list/action'
 import { loveList } from '@renderer/store/list/state'
-import { addDislikeInfo } from '@renderer/core/dislikeList'
+import { addDislikeInfo, checkAdvancedRules } from '@renderer/core/dislikeList'
 // import { checkMusicFileAvailable } from '@renderer/utils/music'
 
 let gettingUrlId = ''
@@ -217,6 +217,31 @@ const handlePlay = () => {
 
   if (appSetting['player.togglePlayMethod'] == 'random' && !playMusicInfo.isTempPlay) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
 
+  // 先检查高级规则
+  const matchedRule = checkAdvancedRules(musicInfo)
+  if (matchedRule) {
+    switch (matchedRule.action) {
+      case 'replace':
+        if (matchedRule.replaceUrl) {
+          setResource(matchedRule.replaceUrl)
+          setMusicInfo({ name: `${musicInfo.name} (${window.i18n.t('player__replaced_by_rule')})` })
+          return
+        }
+        break
+      case 'reject':
+        setStop()
+        setAllStatus(matchedRule.errorMessage || window.i18n.t('player__rejected_by_rule'))
+        if (window.lx.isPlayedStop) return
+        void playNext(true)
+        return
+      case 'block':
+        // 屏蔽等同于跳过
+        if (window.lx.isPlayedStop) return
+        void playNext(true)
+        return
+    }
+  }
+
   // 先获取歌词，检查是否包含韩语
   void getLyricInfo({ musicInfo }).then((lyricInfo) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
@@ -232,7 +257,7 @@ const handlePlay = () => {
     // 检查歌词是否包含韩语
     const isKorean = /[가-힣\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]/.test(lyricInfo.lyric)
     if (appSetting['player.isReplaceKoreanMusic'] && isKorean) {
-      setResource('http://music.163.com/song/media/outer/url?id=418654758.mp3')
+      setResource(appSetting['player.replaceKoreanMusicUrl'] || 'http://music.163.com/song/media/outer/url?id=418654758.mp3')
     } else {
       setMusicUrl(musicInfo)
     }
