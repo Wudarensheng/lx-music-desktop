@@ -13,6 +13,10 @@ export const hasDislike = (info: LX.Music.MusicInfo | LX.Download.ListItem | nul
   return action.hasDislike(info)
 }
 
+export const checkAdvancedRules = (info: LX.Music.MusicInfo | LX.Download.ListItem) => {
+  return action.checkAdvancedRules(info)
+}
+
 export const addDislikeInfo = async(infos: LX.Dislike.DislikeMusicInfo[]) => {
   await rendererInvoke<LX.Dislike.DislikeMusicInfo[]>(DISLIKE_EVENT_NAME.add_dislike_music_infos, infos)
 }

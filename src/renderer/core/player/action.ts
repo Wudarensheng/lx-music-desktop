@@ -224,7 +224,8 @@ const handlePlay = () => {
       case 'replace':
         if (matchedRule.replaceUrl) {
           setResource(matchedRule.replaceUrl)
-          setMusicInfo({ name: `${musicInfo.name} (${window.i18n.t('player__replaced_by_rule')})` })
+          const musicName = 'name' in musicInfo ? musicInfo.name : 'unknown'
+          setMusicInfo({ name: `${musicName} (${window.i18n.t('player__replaced_by_rule')})` })
           return
         }
         break

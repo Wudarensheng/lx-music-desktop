@@ -30,10 +30,10 @@ export const filterMusicList = async({ playedList, listId, list, playerMusicInfo
    * 播放器内当前歌曲（`playInfo.playerPlayIndex`指向的歌曲）
    */
   playerMusicInfo?: LX.Music.MusicInfo | LX.Download.ListItem
-  /**
-   * 不喜欢的歌曲名字列表
-   */
-  dislikeInfo: Omit<LX.Dislike.DislikeInfo, 'rules'>
+   /**
+    * 不喜欢的歌曲名字列表
+    */
+  dislikeInfo: Omit<LX.Dislike.DislikeInfo, 'rules'> & { advancedRules?: LX.Dislike.AdvancedRule[] }
 
   isNext: boolean
 }) => {

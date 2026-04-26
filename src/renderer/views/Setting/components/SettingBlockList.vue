@@ -15,8 +15,8 @@ dd
       span {{ $t('setting__block_list_replace_korean_music_url') }}:
       base-input(
         :model-value="appSetting['player.replaceKoreanMusicUrl']"
-        @update:model-value="updateSetting({'player.replaceKoreanMusicUrl': $event})"
         style="flex: 1;"
+        @update:model-value="updateSetting({'player.replaceKoreanMusicUrl': $event})"
       )
     .tip-text {{ $t('setting__block_list_replace_korean_music_url_tip') }}
 
@@ -61,7 +61,7 @@ dd
           :placeholder="$t('setting__block_list_rule_error_message_tip')"
           style="width: 100%; margin-top: 4px;"
         )
-      base-btn(@click="addRule" :disabled="!newRule.pattern") {{ $t('setting__block_list_add_rule') }}
+      base-btn(:disabled="!newRule.pattern" @click="addRule") {{ $t('setting__block_list_add_rule') }}
 
     //- 规则列表
     .rules-list(v-if="advancedRules.length > 0")
@@ -74,8 +74,8 @@ dd
           div
             base-checkbox(
               :model-value="rule.enabled"
-              @update:model-value="toggleRule(rule.id, $event)"
               :label="`${getMatchTypeText(rule.matchType)}: ${rule.pattern}`"
+              @update:model-value="toggleRule(rule.id, $event)"
             )
             div(style="font-size: 12px; color: var(--color-550); margin-left: 24px;")
               | {{ getActionText(rule.action) }}
@@ -83,8 +83,8 @@ dd
               span(v-if="rule.action === 'reject' && rule.errorMessage")  → {{ rule.errorMessage }}
           base-btn(
             size="small"
-            @click="deleteRule(rule.id)"
             style="color: var(--color-danger);"
+            @click="deleteRule(rule.id)"
           ) {{ $t('setting__block_list_delete_rule') }}
 
     div(v-else style="color: var(--color-550); font-size: 12px;") 暂无规则
