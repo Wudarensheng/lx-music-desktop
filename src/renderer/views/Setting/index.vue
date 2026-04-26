@@ -61,6 +61,7 @@ import SettingList from './components/SettingList.vue'
 import SettingDownload from './components/SettingDownload.vue'
 import SettingSync from './components/SettingSync/index.vue'
 import SettingOpenAPI from './components/SettingOpenAPI.vue'
+import SettingBlockList from './components/SettingBlockList.vue'
 import SettingHotKey from './components/SettingHotKey.vue'
 import SettingNetwork from './components/SettingNetwork.vue'
 import SettingOdc from './components/SettingOdc.vue'
@@ -81,6 +82,7 @@ export default {
     SettingDownload,
     SettingSync,
     SettingOpenAPI,
+    SettingBlockList,
     SettingHotKey,
     SettingNetwork,
     SettingOdc,
@@ -101,6 +103,7 @@ export default {
         { id: 'SettingPlay', title: t('setting__play') },
         { id: 'SettingPlayDetail', title: t('setting__play_detail') },
         { id: 'SettingDesktopLyric', title: t('setting__desktop_lyric') },
+        { id: 'SettingBlockList', title: t('setting__block_list') },
         { id: 'SettingSearch', title: t('setting__search') },
         { id: 'SettingList', title: t('setting__list') },
         { id: 'SettingDownload', title: t('setting__download') },

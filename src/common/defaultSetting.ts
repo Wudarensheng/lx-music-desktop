@@ -46,6 +46,7 @@ const defaultSetting: LX.AppSetting = {
   'player.waitPlayEndStop': true,
   'player.waitPlayEndStopTime': '',
   'player.autoSkipOnError': true,
+  'player.isReplaceKoreanMusic': false,
   'player.isAutoCleanPlayedList': false,
   'player.soundEffect.convolution.fileName': '',
   'player.soundEffect.convolution.mainGain': 10,

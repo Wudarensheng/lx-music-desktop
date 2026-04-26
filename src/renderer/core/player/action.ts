@@ -177,7 +177,7 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
 
     // 检查歌词是否包含韩语
     const isKorean = /[가-힣\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]/.test(lyricInfo.lyric)
-    if (isKorean) {
+    if (appSetting['player.isReplaceKoreanMusic'] && isKorean) {
       setResource('http://music.163.com/song/media/outer/url?id=418654758.mp3')
     } else {
       setMusicUrl(musicInfo)
@@ -231,7 +231,7 @@ const handlePlay = () => {
 
     // 检查歌词是否包含韩语
     const isKorean = /[가-힣\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F]/.test(lyricInfo.lyric)
-    if (isKorean) {
+    if (appSetting['player.isReplaceKoreanMusic'] && isKorean) {
       setResource('http://music.163.com/song/media/outer/url?id=418654758.mp3')
     } else {
       setMusicUrl(musicInfo)
